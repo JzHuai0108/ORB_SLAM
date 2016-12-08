@@ -35,6 +35,7 @@
 #include "g2o/core/block_solver.h"
 #include "g2o/core/optimization_algorithm_levenberg.h"
 #include "g2o/solvers/cholmod/linear_solver_cholmod.h"
+#include "g2o/solvers/eigen/linear_solver_eigen.h"
 #include "g2o/types/sba/types_six_dof_expmap.h"
 #include "g2o/types/slam3d/edge_se3.h"
 #include "g2o/core/robust_kernel_impl.h"
@@ -1286,7 +1287,7 @@ void Optimizer::setupG2o(ScaViSLAM::G2oCameraParameters * g2o_cam,
 
         optimizer->setVerbose(false);
         g2o::BlockSolverX::LinearSolverType * linearSolver=
-                new g2o::LinearSolverCholmod<g2o::BlockSolverX::PoseMatrixType>();
+                new g2o::LinearSolverEigen<g2o::BlockSolverX::PoseMatrixType>();
         g2o::BlockSolverX * block_solver =
                 new g2o::BlockSolverX(linearSolver);
         g2o::OptimizationAlgorithmLevenberg* lm =
@@ -1417,11 +1418,13 @@ size_t Optimizer::copyAllPosesToG2o(g2o::SparseOptimizer * optimizer, const std:
 {
     size_t max_vertex_id=0;
     size_t vertexid= 0;
+    //std::cout<<"空格1"<<std::endl;
     for (vector <KeyFrame*>::const_iterator  it_win = vpLocalKeyFrames.begin(), it_end_win=vpLocalKeyFrames.end();
          it_win!=it_end_win; ++it_win)
     {
         SE3d Tw2cref= (*it_win)->GetPose(); //transform from world to reference camera (i.e. left camera) frame
         vertexid= (*it_win)->mnId*MAGIC2;
+        //std::cout<<"调试1："<<vertexid<<std::endl;
         if(max_vertex_id< vertexid)
             max_vertex_id=vertexid;
         if((*it_win)->mbFixedLinearizationPoint){
@@ -1433,11 +1436,13 @@ size_t Optimizer::copyAllPosesToG2o(g2o::SparseOptimizer * optimizer, const std:
             (*it_win)->v_kf_ = addPoseToG2o(Tw2cref, vertexid, false, optimizer);
         }
     }
+    //std::cout<<"空格2"<<std::endl;
     for (deque<Frame*>::const_iterator  it_win = vpTemporalFrames.begin(), it_end_win=vpTemporalFrames.end();
          it_win!=it_end_win; ++it_win)
     {
         SE3d Tw2cref= (*it_win)->GetPose();  //transform from world to reference camera (i.e. left camera) frame
         vertexid= (*it_win)->mnId*MAGIC2;
+        //std::cout<<"调试2："<<vertexid<<std::endl;
         if(max_vertex_id< vertexid)
             max_vertex_id=vertexid;
 
@@ -1594,12 +1599,19 @@ int Optimizer::LocalOptimize(vk::PinholeCamera * cam,
         }
     }
     pMap->mPointPoseConsistencyMutex.unlock();
+    //std::cout<<"调试1"<<std::endl;       
 
     // add constraint by IMU observations for frames in the temporal window and the current frame
     if(bUseIMUData){
         for (std::deque<Frame*>::const_iterator  it_win = vpTemporalFrames.begin(), it_end_win= vpTemporalFrames.end();
              it_win!=it_end_win; ++it_win)
-        {
+        { 
+          //std::cout<<"调试1:"<<(*it_win)->v_kf_->estimate().translation()<<std::endl;       
+          //std::cout<<"调试2:"<<(*it_win)->v_sb_->estimate()<<std::endl;                     
+          //std::cout<<"调试3:"<<(*(it_win+1))->mTimeStamp-(*it_win)->mTimeStamp<<std::endl;
+          //for(int i=0;i<(*it_win)->imu_observ.size();i++)                                   
+          //  std::cout<<"调试4:"<<(*it_win)->imu_observ[i]<<std::endl;
+
             G2oEdgeIMUConstraint * e = new G2oEdgeIMUConstraint();
             e->setParameterId(0,2);
             e->resize(4);
@@ -1661,7 +1673,9 @@ int Optimizer::LocalOptimize(vk::PinholeCamera * cam,
                 e->setMeasurement((*it_win)->next_frame->imu_observ);
             }
             e->calcAndSetInformation(*g2o_imu);
+            //std::cout<<"添加边"<<std::endl;
             optimizer.addEdge(e);
+            exit(0);
         }
 #ifndef MONO
         // the previous frame and current frame

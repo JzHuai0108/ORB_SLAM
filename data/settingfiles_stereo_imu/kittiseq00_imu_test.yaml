@@ -7,8 +7,8 @@ use_imu_data:true
 input_path:/home/ubuntu/Documents/benchmark/dataset/sequences/00
 time_file:/home/ubuntu/Documents/benchmark/dataset/sequences/00/times.txt
 voc_file_path:/home/ubuntu/catkin_ws/src/orbslam_dwo/Vocabulary/ORBvoc.txt
-output_file:/home/ubuntu/catkin_ws/src/orbslam_dwo/output/kittiseq00_imu.txt
-output_point_file:/home/ubuntu/catkin_ws/src/orbslam_dwo/output/kittiseq00_imu_points.txt
+output_file:/home/ubuntu/catkin_ws/src/orbslam_dwo/output/kittiseq00_imu_test.txt
+output_point_file:/home/ubuntu/catkin_ws/src/orbslam_dwo/output/kittiseq00_imu_points_test.txt
 imu_file: "/home/ubuntu/catkin_ws/src/orbslam_dwo/data/kittiseq00_imu_samplesnoisy.txt" #samples added noise generated according to Microstrain 3DM-GX3-35
 trace_dir: "/home/ubuntu/catkin_ws/src/orbslam_dwo/data/result" # where to put the slam profiled time
 
@@ -54,18 +54,18 @@ gw: !!opencv-matrix # gravity in the local world frame
    rows: 3
    cols: 1
    dt: f
-   data: [   -0.000391708956131998,    9.78093956865728, 6.81059618015123e-05]
+   data: [ 0,    9.8, 0]
 wiew: !!opencv-matrix # earth rotation in the local world frame
    rows: 3
    cols: 1
    dt: f
-   data: [ -1.86714087981123e-05,  -1.06396154889527e-05,  6.96826462834436e-05]
+   data: [ 0,  0, 0]
 # the world frame is the LEFT camera frame at startIndex
 vs0inw: !!opencv-matrix
    rows: 3
    cols: 1
    dt: d
-   data: [  -0.441011,   -0.268243, 8.28043 ]
+   data: [ -0.441011,   -0.268243, 8.28043 ]
 
 # Camera calibration parameters (OpenCV)
 Camera.width: 1241

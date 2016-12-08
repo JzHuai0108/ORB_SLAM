@@ -35,7 +35,7 @@ MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false)
     const char* CAMERA_NAMESPACE = "Camera";
 
     //Configure MapPoints
-    fPointSize=0.01;
+    fPointSize=1;
     mPoints.header.frame_id = MAP_FRAME_ID;
     mPoints.ns = POINTS_NAMESPACE;
     mPoints.id=0;
@@ -47,7 +47,7 @@ MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false)
     mPoints.color.a = 1.0;
 
     //Configure KeyFrames
-    fCameraSize=0.04;
+    fCameraSize=4;
     mKeyFrames.header.frame_id = MAP_FRAME_ID;
     mKeyFrames.ns = KEYFRAMES_NAMESPACE;
     mKeyFrames.id=1;

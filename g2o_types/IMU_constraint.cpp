@@ -38,7 +38,7 @@ bool G2oVertexSpeedBias::write(std::ostream& os) const {
     return os.good();
 }
 
-bool G2oVertexSpeedBiasEx::read(std::istream& is) {
+/*bool G2oVertexSpeedBiasEx::read(std::istream& is) {
     Matrix<double, 36,1> est;
     for (int i=0; i<36; i++)
         is >> est[i];
@@ -49,7 +49,7 @@ bool G2oVertexSpeedBiasEx::write(std::ostream& os) const {
     for (int i=0; i<36; i++)
         os << estimate()[i] << " ";
     return os.good();
-}
+}*/
 
 bool G2oEdgeIMUConstraint
 ::write(std::ostream& os) const {
@@ -141,7 +141,7 @@ bool G2oEdgeIMUConstraint
 
 //added shape matrices compared to G2oEdgeIMUConstraint operator()
 // pSags is the data pointer to S_a, S_g, T_s with elements in row major order
-template <typename T>
+/*template <typename T>
 bool G2oEdgeIMUConstraintEx
 ::operator ()( const  T* pTw2ck, const T* epsilonk, const T* pXsbk, const T* pTw2ckp1,
                const T* pXsbkp1, const T* pSags, T* error) const
@@ -179,7 +179,7 @@ bool G2oEdgeIMUConstraintEx
     value.template head<6>()=SE3Group<T>::log(predTckp12w*se3Tw2ckp1);
     value.template tail<3>()=pred_speed_2-Xsbkp1.template head<3>();
     return true;
-}
+}*/
 // this implementation refers to ScaViSLAM:g2o_types/anchored_points.cpp and g2o:g2o/types/sba/types_six_dof_expmap.cpp
 // though N.B. g2o used SE3Quat::exp([\omega, \upsilon]), Strasdat used SE3d::exp([\upsilon, \omega])
 //here we follow Strasdat's notation
@@ -416,7 +416,7 @@ void G2oEdgeIMUConstraint::linearizeOplus()
     _jacobianOplus[3]=Matrix<double, 15, 9>::Zero(); //15x9
     _jacobianOplus[3].bottomRightCorner<9,9>()= -Matrix<double, 9,9>::Identity();
 }
-void IMURollPitchEdge::computeError()
+/*void IMURollPitchEdge::computeError()
 {
     const G2oVertexSE3* v_se3 = static_cast<const G2oVertexSE3*>(_vertices[0]);
     const G2oVertexSpeedBias* v_sb = static_cast<const G2oVertexSpeedBias*>(_vertices[1]);
@@ -703,7 +703,7 @@ void G2oEdgeIMUConstraintEx
     //    cout<<"new P(9,9)"<<P.topLeftCorner<9,9>()<<endl;
     //    cout<<_information.diagonal().transpose()<<endl;
 }
-
+*/
 IMUProcessor::IMUProcessor(const std::string imu_file, const double sample_interval,const G2oIMUParameters &imu, IMUFileType fileType):
     speed_bias_1(Eigen::Matrix<double, 9,1>::Zero()), pred_speed_bias_2(Eigen::Matrix<double, 9,1>::Zero()),
     ft(fileType), ig(imu_file, ft, sample_interval), imu_(imu), bStatesInitialized(false),
@@ -757,7 +757,7 @@ void IMUProcessor::printStateAndCov(std::ofstream &output, double time)const {
     output<<stdDiag.transpose()<<endl;
 }
 
-void IMUProcessor::freeInertial(std::string output_file, double finish_time)
+/*void IMUProcessor::freeInertial(std::string output_file, double finish_time)
 {
     int every_n_reading=3;// update covariance every n IMU readings
     imu_traj_stream.open(output_file.c_str(), std::ios::out);
@@ -867,7 +867,7 @@ void IMUProcessor::freeInertial(std::string output_file, double finish_time)
     printStateAndCov(imu_traj_stream, time_pair[1]);
 #endif
     imu_traj_stream.close();
-}
+}*/
 
 void IMUProcessor::initStates(const Sophus::SE3d &Ts1tow, const Eigen::Matrix<double, 9,1> & sb1, const double timestamp, Eigen::Matrix<double, 15, 15> *pCov)
 {

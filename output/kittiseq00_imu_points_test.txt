@@ -1,0 +1,1 @@
+%Each row is point id, position xyz in world frame
