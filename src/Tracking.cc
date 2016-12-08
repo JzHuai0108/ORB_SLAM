@@ -49,6 +49,7 @@
 
 using namespace std;
 using namespace Sophus;
+using namespace Eigen;
 using namespace ScaViSLAM;
 
 namespace ORB_SLAM
@@ -2850,7 +2851,7 @@ void Tracking::UpdateReferenceKeyFramesAndPoints()
             KeyFrame* pKF = it.second;
             if(pKF->isBad())
                 continue;
-            mvpLocalKeyFrames.push_back(pKF);
+            mvpLocalKeyFrames.push_back(pKF);//可以观测到当前帧中MapPoint的所有帧，但要排除在temporal window中的keyframes
             pKF->SetNotErase(DoubleWindowKF);
             pKF->mnTrackReferenceForFrame = mpCurrentFrame->mnId;
             ++numKeyFrames;
@@ -2870,7 +2871,7 @@ void Tracking::UpdateReferenceKeyFramesAndPoints()
                 KeyFrame* pNeighKF = *itNeighKF;
                 if(!pNeighKF->isBad() && (pNeighKF->mnTrackReferenceForFrame!=mpCurrentFrame->mnId))
                 {
-                        mvpLocalKeyFrames.push_back(pNeighKF);
+                        mvpLocalKeyFrames.push_back(pNeighKF);//关键帧的邻居
                         pNeighKF->SetNotErase(DoubleWindowKF);
                         pNeighKF->mnTrackReferenceForFrame=mpCurrentFrame->mnId;
                         ++numKeyFrames;
@@ -2901,7 +2902,7 @@ void Tracking::UpdateReferenceKeyFramesAndPoints()
             }
             if(!pMP->isBad())
             {
-                mvpLocalMapPoints.push_back(pMP);
+                mvpLocalMapPoints.push_back(pMP);//添加temporal window中的MapPoint
                 pMP->mnTrackReferenceForFrame=mpCurrentFrame->mnId;
                 pMP->mnObservationsInDoubleWindow=1;
             }
@@ -2923,7 +2924,7 @@ void Tracking::UpdateReferenceKeyFramesAndPoints()
             }
             if(!pMP->isBad())
             {
-                mvpLocalMapPoints.push_back(pMP);
+                mvpLocalMapPoints.push_back(pMP);//添加spatial window中的MapPoint
                 pMP->mnTrackReferenceForFrame=mpCurrentFrame->mnId;
                 pMP->mnObservationsInDoubleWindow=1;
             }

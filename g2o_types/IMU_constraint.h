@@ -97,7 +97,7 @@ public:
     double sampling_interval; // 1/frequency, unit sec
 };
 // time varying lever arm vertex can represent the antenna position in the IMU frame
-class G2oVertexLeverArm : public g2o::BaseVertex<3, Eigen::Vector3d >
+/*class G2oVertexLeverArm : public g2o::BaseVertex<3, Eigen::Vector3d >
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -130,7 +130,7 @@ public:
         _estimate.setZero();
     }
 };
-
+*/
 
 class G2oVertexSpeedBias : public g2o::BaseVertex<9, Eigen::Matrix<double,9,1> >
 {
@@ -217,7 +217,7 @@ public:
 };
 // extended speed bias vertex, including speed of the IMU sensor in world frame, accelerometer bias, gyro bias,
 // elements of S_a, S_g, T_s in row major order following IMUErrorModel's definition
-class G2oVertexSpeedBiasEx : public g2o::BaseVertex<36, Eigen::Matrix<double,36,1> >
+/*class G2oVertexSpeedBiasEx : public g2o::BaseVertex<36, Eigen::Matrix<double,36,1> >
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -250,7 +250,7 @@ public:
         first_estimate=new Eigen::Matrix<double,36,1>(fe);
     }
     Eigen::Matrix<double,36,1>* first_estimate;
-};
+};*/
 //s0 can be any local world frame
 // acc, m/s^2, estimated acc from imu in s frame with bias removed, gyro, rad/s, estimated angular rate by imu with bias removed
 // for better accuracy within this function, (1) use a gravity model as simple as Heiskanen and Moritz 1967,
@@ -478,7 +478,7 @@ public:
 // the velocity of the IMU sensor in the world frame, and IMU acc and gyro biases
 // observations are the difference between predicted states at k+1 and the states at k+1
 
-class G2oEdgeIMUConstraintEx : public  g2o::BaseMultiEdge<15, std::vector<Eigen::Matrix<double, 7,1> > >
+/*class G2oEdgeIMUConstraintEx : public  g2o::BaseMultiEdge<15, std::vector<Eigen::Matrix<double, 7,1> > >
 {
     //IMU measurements are stored in a std::vector<Matrix<double, 7,1> > structure, each entry: timestamp in seconds,
     //acceleration measurements in m/s^2, gyro measurements in radian/sec
@@ -530,11 +530,11 @@ public:
     virtual void computeError();
     virtual void linearizeOplus();
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
@@ -557,12 +557,12 @@ public:
     }
     void linearizeOplus();
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
@@ -587,12 +587,12 @@ public:
     }
     void linearizeOplus();
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
@@ -630,12 +630,12 @@ public:
         _jacobianOplusXj= -Eigen::Matrix3d::Identity();
     }
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
@@ -662,12 +662,12 @@ public:
         _jacobianOplusXi = third(_measurement,  error);
     }
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
@@ -690,16 +690,16 @@ public:
         _jacobianOplusXi= -Eigen::Matrix<double, 9,9>::Identity();
     }
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
-};
+};*/
 
 // prior of S_a, S_g, T_s shape matrices of accelerometers and gyros
 class G2oEdgeShapeMatrices : public g2o::BaseUnaryEdge<27, Eigen::Matrix<double ,27,1>, G2oVertexShapeMatrices>
@@ -736,7 +736,7 @@ public:
     }
 };
 // prior of lever arm between two sensors
-class G2oUnaryEdgeLeverArm : public g2o::BaseUnaryEdge< 3, Eigen::Matrix<double ,3,1>, G2oVertexLeverArm>
+/*class G2oUnaryEdgeLeverArm : public g2o::BaseUnaryEdge< 3, Eigen::Matrix<double ,3,1>, G2oVertexLeverArm>
 {
 public:
     G2oUnaryEdgeLeverArm()
@@ -753,16 +753,16 @@ public:
         _jacobianOplusXi= -Eigen::Matrix<double, 3, 3>::Identity();
     }
 
-    virtual bool read(std::istream& /*is*/)
+    virtual bool read(std::istream& )
     {
         return false;
     }
 
-    virtual bool write(std::ostream& /*os*/) const
+    virtual bool write(std::ostream& ) const
     {
         return false;
     }
-};
+};*/
 class IMUProcessor
 {
 public:   
@@ -776,7 +776,7 @@ public:
     void printStateAndCov(std::ofstream &output, double time)const;
 
     // read each measurement from the IMU file and do free inertial integration
-    void freeInertial(std::string output_file, double finish_time);
+    //void freeInertial(std::string output_file, double finish_time);
 
     void initStates(const Sophus::SE3d &Ts1tow, const Eigen::Matrix<double, 9,1> & sb1, const double timestamp,
                     Eigen::Matrix<double, 15, 15> *pCov=(Eigen::Matrix<double, 15, 15> *)NULL);
@@ -805,7 +805,7 @@ public:
 // camera related parameters in visual inertial navigation, following Li et al ICRA 2014 eq (10)
 // 14 dimensions are position of the IMU frame in the reference sensor, i.e., camera frame, c_x, c_y, f_x, f_y,
 // k_1, k_2, k_3, t_1, t_2, t_r, t_d
-class G2oVertexCamParams : public g2o::BaseVertex< 14, Eigen::Matrix<double,14,1> >
+/*class G2oVertexCamParams : public g2o::BaseVertex< 14, Eigen::Matrix<double,14,1> >
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -838,11 +838,11 @@ public:
         first_estimate=new Eigen::Matrix<double,14,1>(fe);
     }
     Eigen::Matrix<double,14,1>* first_estimate;
-};
+};*/
 // 10 dimensional rolling shutter camera vertex, f_x, f_y, c_x, c_y, k_1, k_2, k_3, t_1, t_2, t_r
 // focal length in pixel units, principal points in pixel units, radial distortion,
 // tangential distortion, read out time for each frame
-class G2oVertexRSCamera : public g2o::BaseVertex<10, Eigen::Matrix<double,10,1> >
+/*class G2oVertexRSCamera : public g2o::BaseVertex<10, Eigen::Matrix<double,10,1> >
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -965,7 +965,7 @@ public:
         first_estimate=new Eigen::Matrix<double,8,1>(fe);
     }
     Eigen::Matrix<double,8,1>* first_estimate;
-};
+};*/
 void testG2OVertexGSCamera();
 }
 #endif
