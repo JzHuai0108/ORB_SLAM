@@ -1,0 +1,2 @@
+%Each row is timestamp, pos of camera in world frame, rotation to world from camera frame in quaternion xyzw format
+0.103736   -0.001098   -0.006884    0.676598    0.000949   -0.001699    0.001363    0.999997 -0.450073 -0.271259  8.275094  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000
